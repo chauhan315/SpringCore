@@ -41,8 +41,78 @@ public class Task {
 	@ManyToOne
 	@JoinColumn(name = "assigned_to", nullable = false)
 	private Employee assignedTo;
-	
+
 	@Enumerated(EnumType.STRING)
 	@Column(name = "priority")
 	private TaskPriority priority;
+
+	public Task(int task_id, String title, String description, TaskStatus status, Employee assignedTo,
+			TaskPriority priority) {
+		super();
+		this.task_id = task_id;
+		this.title = title;
+		this.description = description;
+		this.status = status;
+		this.assignedTo = assignedTo;
+		this.priority = priority;
+	}
+
+	public Task() {
+		super();
+	}
+
+	public int getTask_id() {
+		return task_id;
+	}
+
+	public void setTask_id(int task_id) {
+		this.task_id = task_id;
+	}
+
+	public String getTitle() {
+		return title;
+	}
+
+	public void setTitle(String title) {
+		this.title = title;
+	}
+
+	public String getDescription() {
+		return description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
+	}
+
+	public TaskStatus getStatus() {
+		return status;
+	}
+
+	public void setStatus(TaskStatus status) {
+		this.status = status;
+	}
+
+	public Employee getAssignedTo() {
+		return assignedTo;
+	}
+
+	public void setAssignedTo(Employee assignedTo) {
+		this.assignedTo = assignedTo;
+	}
+
+	public TaskPriority getPriority() {
+		return priority;
+	}
+
+	public void setPriority(TaskPriority priority) {
+		this.priority = priority;
+	}
+
+	@Override
+	public String toString() {
+		return "Task [task_id=" + task_id + ", title=" + title + ", description=" + description + ", status=" + status
+				+ ", assignedTo=" + assignedTo + ", priority=" + priority + "]";
+	}
+
 }
