@@ -3,7 +3,6 @@ package com.example.employeetaskmanager.config;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
-import java.util.Scanner;
 import javax.sql.DataSource;
 
 import org.springframework.context.annotation.Bean;
@@ -14,33 +13,25 @@ import org.springframework.jdbc.datasource.DriverManagerDataSource;
 public class DatabaseConfig {
 
     @Bean
-    public DataSource dataSource(Scanner scanner) {
-        String schema = null;
-        String username = null;
-        String password = null;
-        boolean authenticated = false;
-
-        while (!authenticated) {
-            System.out.println("[+Note] Please first create a schema in your MySQL...");
-            System.out.print("Enter MySQL Database Schema: ");
-            schema = scanner.nextLine();
-
-            System.out.print("Enter MySQL Username: ");
-            username = scanner.nextLine();
-
-            System.out.print("Enter MySQL Password: ");
-            password = scanner.nextLine();
-
-            if (validateCredentials(schema, username, password)) {
-                authenticated = true;
-                System.out.println("[✔] Authentication Successful.");
-            } else {
-                System.out.println("[✘] Authentication Failed! Please try again.");
-            }
-        }
-
+    public DataSource dataSource() {
         String dockerEnv = System.getenv("DOCKER_ENV");
-        String host = (dockerEnv != null && dockerEnv.equals("true")) ? "host.docker.internal" : "localhost";
+        boolean runningInsideDocker = (dockerEnv != null && dockerEnv.equals("true"));
+
+        
+        String dockerMySQLHost = "mysql-container"; 
+        String localMySQLHost = "localhost";
+        String defaultMySQLHost = runningInsideDocker ? "host.docker.internal" : localMySQLHost;
+
+        String schema = "mentor";  
+        String username = "root";  
+        String password = "yourpassword";  
+
+        String host = testMySQLConnection(dockerMySQLHost, schema, username, password)
+                ? dockerMySQLHost
+                : defaultMySQLHost;
+
+        System.out.println("Running inside Docker: " + runningInsideDocker);
+        System.out.println("Using MySQL host: " + host);
 
         DriverManagerDataSource dataSource = new DriverManagerDataSource();
         dataSource.setDriverClassName("com.mysql.cj.jdbc.Driver");
@@ -51,12 +42,14 @@ public class DatabaseConfig {
         return dataSource;
     }
 
-    private boolean validateCredentials(String schema, String username, String password) {
-        String url = "jdbc:mysql://localhost:3306/" + schema;
+    private boolean testMySQLConnection(String host, String schema, String username, String password) {
+        String url = "jdbc:mysql://" + host + ":3306/" + schema;
         try (Connection connection = DriverManager.getConnection(url, username, password)) {
-            return true; 
+            System.out.println("[✔] Successfully connected to MySQL at " + host);
+            return true;
         } catch (SQLException e) {
-            return false; 
+            System.out.println("[✘] Failed to connect to MySQL at " + host);
+            return false;
         }
     }
 }
