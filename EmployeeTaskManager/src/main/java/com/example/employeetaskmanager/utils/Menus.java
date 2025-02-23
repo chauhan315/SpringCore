@@ -3,6 +3,7 @@ package com.example.employeetaskmanager.utils;
 import java.util.Optional;
 import java.util.Scanner;
 
+import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -159,6 +160,7 @@ public class Menus {
         task.setTitle(dataArray[0]);
         task.setDescription(dataArray[1]);
         task.setPriority(taskPriority);
+        task.setStatus(TaskStatus.PENDING);
 
         taskService.assignTask(task, employee_Id);
         System.out.println("Task assigned successfully.");
@@ -198,9 +200,13 @@ public class Menus {
         int id = scanner.nextInt();
         scanner.nextLine(); 
 
+        Employee employee;
+        
         Optional<Employee> optionalEmployee = employeeService.getEmployeeById(id);
         if (optionalEmployee.isPresent()) {
-            System.out.println(optionalEmployee.get());
+        	employee = optionalEmployee.get();
+        	Hibernate.initialize(employee.getTasks());
+            System.out.println(employee);
         } else {
             System.out.println("Employee not found.");
         }

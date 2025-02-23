@@ -3,6 +3,7 @@ package com.example.employeetaskmanager.service;
 import java.util.List;
 import java.util.Optional;
 
+import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -14,7 +15,6 @@ import com.example.employeetaskmanager.repository.EmployeeRepository;
 import com.example.employeetaskmanager.repository.TaskRepository;
 
 @Service
-@Transactional
 public class TaskServiceImpl implements TaskService {
     
     @Autowired
@@ -36,11 +36,20 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<Task> getAllTasks() {
-        return taskRepo.findAll();
+    	 List<Task> tasks = taskRepo.findAll();
+
+         for (Task task : tasks) {
+             if (task.getAssignedTo() != null) {
+                 Hibernate.initialize(task.getAssignedTo().getName());
+             }
+         }
+         return tasks;
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<Task> getTasksByEmployee(int employeeId) {
         Optional<Employee> employeeOpt = empRepo.findById(employeeId);
         if (employeeOpt.isPresent()) {
@@ -63,6 +72,7 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public void deleteTask(int taskId) {
         if (taskRepo.existsById(taskId)) {
             taskRepo.deleteById(taskId);

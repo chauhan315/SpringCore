@@ -11,10 +11,18 @@ import com.example.employeetaskmanager.model.Employee;
 @Component
 public class SecurityAspect {
 
-    private Employee currentUser;
-    
-    public void setCurrentUser(Employee user) {
-        this.currentUser = user;
+    private static Employee currentUser; 
+
+    public static void setCurrentUser(Employee user) {
+        currentUser = user;
+    }
+
+    public static void clearCurrentUser() { 
+        currentUser = null;
+    }
+
+    public static Employee getCurrentUser() { 
+        return currentUser;
     }
 
     @Pointcut("execution(* com.example.employeetaskmanager.utils.Menus.adminMenu(..))")
@@ -22,8 +30,8 @@ public class SecurityAspect {
 
     @Before("adminMethods()")
     public void checkAdminAccess() {
-        if (currentUser == null || !currentUser.getRole().equals(Role.ADMIN)) {
-            throw new SecurityException("Access Denied! Admin rights required.");
+        if (currentUser == null || currentUser.getRole() != Role.ADMIN) {
+            throw new SecurityException("🚨 Access Denied! Admin rights required.");
         }
     }
 }

@@ -4,17 +4,13 @@ import java.util.Scanner;
 
 import javax.sql.DataSource;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 
 @Configuration
 public class DatabaseConfig {
-
-	@Bean
-	public Scanner scanner() {
-		return new Scanner(System.in);
-	}
 
 	@Bean
 	public DataSource dataSource(Scanner scanner) {
@@ -34,6 +30,5 @@ public class DatabaseConfig {
 		dataSource.setPassword(password);
 
 		return dataSource;
-
 	}
 }
