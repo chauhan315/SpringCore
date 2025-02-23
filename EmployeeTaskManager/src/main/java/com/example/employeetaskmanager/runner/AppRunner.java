@@ -15,49 +15,49 @@ import com.example.employeetaskmanager.utils.Menus;
 @Component
 public class AppRunner implements CommandLineRunner {
 
-	@Autowired
-	private Scanner sc;
+    @Autowired
+    private Scanner scanner;
 
-	@Autowired
-	private EmployeeService empService;
-	
-	@Autowired
-	private Menus menu;
+    @Autowired
+    private EmployeeService employeeService;
 
-	@Override
-	public void run(String... args) throws Exception {
-		System.out.println("=== Welcome to Employee Task Manager ===");
-		loginUser();
-	}
+    @Autowired
+    private Menus menu;
 
-	private void loginUser() {
-		System.out.println("Enter your email...");
-		String email = sc.nextLine();
-		
-		System.out.println("Enter your password...");
-		String password = sc.nextLine();
-		
-		Optional<Employee> employeeOpt = empService.getEmployeeByEmail(email);
-		
-		if(employeeOpt.isPresent()) {
-			Employee employee = employeeOpt.get();
-			
-			if(employee.getPassword().equals(password)) {
-				System.out.println("Welcome, " + employee.getName() + "!");
-				
-				if(employee.getRole().equals(Role.ADMIN)) {
-					menu.adminMenu();
-				} else {
-					menu.employeeMenu(employee.getEmployee_id());
-				}
-			} else {
-				System.out.println("Incorrect Password!... try again");
-				loginUser();
-			}
-		} else {
-			System.out.println("No user with the email present... check again...");
-			loginUser();
-		}
-		
-	}
+    @Override
+    public void run(String... args) {
+        System.out.println("=== Welcome to Employee Task Manager ===");
+        loginUser();
+    }
+
+    private void loginUser() {
+        while (true) {
+            System.out.println("\nEnter your email:");
+            String email = scanner.nextLine().trim();
+
+            System.out.println("Enter your password:");
+            String password = scanner.nextLine().trim();
+
+            Optional<Employee> employeeOpt = employeeService.getEmployeeByEmail(email);
+
+            if (employeeOpt.isPresent()) {
+                Employee employee = employeeOpt.get();
+
+                if (employee.getPassword().equals(password)) {
+                    System.out.println("\nWelcome, " + employee.getName() + "!");
+
+                    if (employee.getRole() == Role.ADMIN) {
+                        menu.adminMenu();
+                    } else {
+                        menu.employeeMenu(employee.getEmployee_id());
+                    }
+                    return; 
+                } else {
+                    System.out.println("\n❌ Incorrect Password! Please try again.");
+                }
+            } else {
+                System.out.println("\n❌ No user found with this email. Please check again.");
+            }
+        }
+    }
 }
