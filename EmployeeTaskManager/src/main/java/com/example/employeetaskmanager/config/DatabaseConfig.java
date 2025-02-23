@@ -3,6 +3,7 @@ package com.example.employeetaskmanager.config;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.util.Scanner;
 import javax.sql.DataSource;
 
 import org.springframework.context.annotation.Bean;
@@ -14,21 +15,35 @@ public class DatabaseConfig {
 
     @Bean
     public DataSource dataSource() {
+        Scanner scanner = new Scanner(System.in);
+
+        System.out.println("[+Note] Please first create a schema in your MySQL...");
+        System.out.print("Enter MySQL Database Schema: ");
+        String schema = scanner.nextLine();
+
+        System.out.print("Enter MySQL Username: ");
+        String username = scanner.nextLine();
+
+        System.out.print("Enter MySQL Password: ");
+        String password = scanner.nextLine();
+
+        // Check if running inside Docker
         String dockerEnv = System.getenv("DOCKER_ENV");
         boolean runningInsideDocker = (dockerEnv != null && dockerEnv.equals("true"));
 
-        
-        String dockerMySQLHost = "mysql-container"; 
-        String localMySQLHost = "localhost";
-        String defaultMySQLHost = runningInsideDocker ? "host.docker.internal" : localMySQLHost;
+        // Ask for MySQL container name if running inside Docker
+        String mysqlContainerName = "localhost"; // Default to local MySQL
+        if (runningInsideDocker) {
+            System.out.print("Enter MySQL Container Name (if using Docker): ");
+            mysqlContainerName = scanner.nextLine().trim();
+            if (mysqlContainerName.isEmpty()) {
+                mysqlContainerName = "host.docker.internal"; // Default fallback
+            }
+        }
 
-        String schema = "mentor";  
-        String username = "root";  
-        String password = "yourpassword";  
-
-        String host = testMySQLConnection(dockerMySQLHost, schema, username, password)
-                ? dockerMySQLHost
-                : defaultMySQLHost;
+        String host = testMySQLConnection(mysqlContainerName, schema, username, password)
+                ? mysqlContainerName
+                : "localhost";
 
         System.out.println("Running inside Docker: " + runningInsideDocker);
         System.out.println("Using MySQL host: " + host);
