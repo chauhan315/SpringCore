@@ -5,6 +5,7 @@ import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.example.employeetaskmanager.model.Employee;
 import com.example.employeetaskmanager.model.Task;
@@ -13,6 +14,7 @@ import com.example.employeetaskmanager.repository.EmployeeRepository;
 import com.example.employeetaskmanager.repository.TaskRepository;
 
 @Service
+@Transactional
 public class TaskServiceImpl implements TaskService {
     
     @Autowired
