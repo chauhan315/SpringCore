@@ -14,4 +14,6 @@ public interface EmployeeService {
 	Optional<Employee> getEmployeeById(int id);
 
 	void deleteEmployee(int id);
+
+	Optional<Employee> getEmployeeByEmail(String email);
 }

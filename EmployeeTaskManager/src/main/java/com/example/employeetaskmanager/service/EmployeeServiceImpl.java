@@ -38,4 +38,9 @@ public class EmployeeServiceImpl implements EmployeeService {
             throw new RuntimeException("Employee with ID " + id + " not found.");
         }
     }
+
+	@Override
+	public Optional<Employee> getEmployeeByEmail(String email) {
+		return empRepo.findEmployeeByEmail(email);
+	}
 }
