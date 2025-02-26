@@ -17,7 +17,7 @@ public class DatabaseConfig {
     public DataSource dataSource() {
         Scanner scanner = new Scanner(System.in);
 
-        System.out.println("[+Note] Please first create a schema in your MySQL...");
+        System.out.println("[INFO] Please first create a schema in your MySQL...");
         System.out.print("Enter MySQL Database Schema: ");
         String schema = scanner.nextLine();
 
@@ -34,7 +34,7 @@ public class DatabaseConfig {
         // Ask for MySQL container name if running inside Docker
         String mysqlContainerName = "localhost"; // Default to local MySQL
         if (runningInsideDocker) {
-            System.out.print("Enter MySQL Container Name (if using Docker): ");
+            System.out.print("[INFO} Enter MySQL Container Name (if using Docker): ");
             mysqlContainerName = scanner.nextLine().trim();
             if (mysqlContainerName.isEmpty()) {
                 mysqlContainerName = "host.docker.internal"; // Default fallback
