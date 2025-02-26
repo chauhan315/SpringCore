@@ -48,7 +48,7 @@ This is a standalone **Spring Boot CLI application** that interacts with a **MyS
 
 ### 1. Clone the Repository
 
-git clone https://github.com/your-repo/EmployeeTaskManager.git
+git clone https://github.com/chauhan315/SpringCore/tree/main/EmployeeTaskManager
 cd EmployeeTaskManager
 
 ### 2. Build the JAR File Using Maven
